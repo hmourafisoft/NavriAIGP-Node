@@ -113,3 +113,45 @@ export interface PolicyRecord {
  */
 export type TraceStatus = 'running' | 'success' | 'error' | 'cancelled';
 
+/**
+ * Input for stats overview query
+ */
+export interface StatsOverviewInput {
+  tenantId: string;
+  environment?: string;
+  from?: Date;
+  to?: Date;
+}
+
+/**
+ * Use case statistics
+ */
+export interface UseCaseStats {
+  useCaseId: string;
+  traces: number;
+  modelCalls: number;
+  agentCalls: number;
+  lastTraceAt?: string;
+}
+
+/**
+ * Summary statistics
+ */
+export interface StatsSummary {
+  totalTraces: number;
+  totalModelCalls: number;
+  totalAgentCalls: number;
+}
+
+/**
+ * Stats overview response
+ */
+export interface StatsOverview {
+  tenantId: string;
+  environment?: string;
+  from: string;
+  to: string;
+  summary: StatsSummary;
+  byUseCase: UseCaseStats[];
+}
+

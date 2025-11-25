@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { logger } from '../infra/logger';
 
 const router = Router();
 const startTime = Date.now();
@@ -9,7 +8,7 @@ const startTime = Date.now();
  * GET /health
  * Returns service status, uptime, and timestamp
  */
-router.get('/health', (req: Request, res: Response) => {
+router.get('/', (_req: Request, res: Response): void => {
   const uptime = Math.floor((Date.now() - startTime) / 1000); // seconds
 
   res.json({

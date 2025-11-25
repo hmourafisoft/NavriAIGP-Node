@@ -36,12 +36,12 @@ RUN npm ci --omit=dev && npm cache clean --force
 # Copy built application from build stage
 COPY --from=build /app/dist ./dist
 
-# Expose port (default 4000, but can be overridden via PORT env var)
-EXPOSE 4000
+# Expose port (default 3000, but can be overridden via PORT env var)
+EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:4000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://localhost:' + (process.env.PORT || 3000) + '/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # Start the application
 CMD ["node", "dist/server.js"]

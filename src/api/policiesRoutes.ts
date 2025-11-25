@@ -43,7 +43,7 @@ const importPoliciesSchema = z.object({
  * POST /policies/decide
  * Make a policy decision based on input criteria
  */
-router.post('/decide', async (req: Request, res: Response) => {
+router.post('/decide', async (req: Request, res: Response): Promise<void> => {
   try {
     const body = decideSchema.parse(req.body);
     
@@ -58,14 +58,15 @@ router.post('/decide', async (req: Request, res: Response) => {
       dataSensitivity: body.dataSensitivity,
     });
 
-    res.json(decision);
+    res.status(200).json(decision);
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn('Invalid request body for /policies/decide', { errors: error.errors });
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Validation error',
         details: error.errors,
       });
+      return;
     }
 
     logger.error('Failed to make policy decision', error);
@@ -84,7 +85,7 @@ router.post('/decide', async (req: Request, res: Response) => {
  * 1. Deletes existing policies for the tenant (or marks them as inactive)
  * 2. Inserts the new policies
  */
-router.post('/import', async (req: Request, res: Response) => {
+router.post('/import', async (req: Request, res: Response): Promise<void> => {
   try {
     const body = importPoliciesSchema.parse(req.body);
     
@@ -134,10 +135,11 @@ router.post('/import', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn('Invalid request body for /policies/import', { errors: error.errors });
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Validation error',
         details: error.errors,
       });
+      return;
     }
 
     logger.error('Failed to import policies', error);

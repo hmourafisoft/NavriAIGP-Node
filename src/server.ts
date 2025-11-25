@@ -5,6 +5,7 @@ import { logger } from './infra/logger';
 import healthRoutes from './api/healthRoutes';
 import tracesRoutes from './api/tracesRoutes';
 import policiesRoutes from './api/policiesRoutes';
+import statsRoutes from './api/statsRoutes';
 
 // Load environment variables
 dotenv.config();
@@ -19,20 +20,21 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // CORS middleware (simple configuration for now)
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, res: Response, next: NextFunction): void => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+    res.sendStatus(200);
+    return;
   }
   
   next();
 });
 
 // Request logging middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, _res: Response, next: NextFunction): void => {
   logger.debug('Incoming request', {
     method: req.method,
     path: req.path,
@@ -45,9 +47,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/health', healthRoutes);
 app.use('/traces', tracesRoutes);
 app.use('/policies', policiesRoutes);
+app.use('/stats', statsRoutes);
 
 // Root endpoint
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response): void => {
   res.json({
     service: 'NavriAIGP-Node',
     description: 'Governance node (data plane) for AIGP',
@@ -57,7 +60,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, req: Request, res: Response, _next: NextFunction): void => {
   logger.error('Unhandled error', err, {
     method: req.method,
     path: req.path,
@@ -70,7 +73,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // 404 handler
-app.use((req: Request, res: Response) => {
+app.use((req: Request, res: Response): void => {
   res.status(404).json({
     error: 'Not found',
     path: req.path,

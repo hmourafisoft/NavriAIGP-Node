@@ -29,10 +29,12 @@ NavriAIGP-Node/
 │   ├── api/
 │   │   ├── tracesRoutes.ts      # Rotas para traces
 │   │   ├── policiesRoutes.ts    # Rotas para políticas
-│   │   └── healthRoutes.ts      # Health check
+│   │   ├── healthRoutes.ts      # Health check
+│   │   └── statsRoutes.ts       # Estatísticas e observabilidade
 │   ├── core/
 │   │   ├── traceService.ts      # Serviço de traces
 │   │   ├── policyEngine.ts      # Motor de políticas
+│   │   ├── statsService.ts      # Serviço de estatísticas
 │   │   └── types.ts             # Definições de tipos
 │   ├── infra/
 │   │   ├── db.ts                # Conexão com PostgreSQL
@@ -408,6 +410,66 @@ Content-Type: application/json
     }
   ]
 }
+```
+
+### Statistics
+
+#### Overview Statistics
+
+```bash
+GET /stats/overview?tenantId=tenant-local&environment=hml
+```
+
+**Query Parameters:**
+- `tenantId` (required): Tenant/organization ID
+- `environment` (optional): Filter by environment (dev/hml/prod)
+- `from` (optional): Start date in ISO format (default: 7 days ago)
+- `to` (optional): End date in ISO format (default: now)
+
+**Resposta:**
+```json
+{
+  "tenantId": "tenant-local",
+  "environment": "hml",
+  "from": "2025-01-18T00:00:00.000Z",
+  "to": "2025-01-25T00:00:00.000Z",
+  "summary": {
+    "totalTraces": 123,
+    "totalModelCalls": 456,
+    "totalAgentCalls": 78
+  },
+  "byUseCase": [
+    {
+      "useCaseId": "UC-DB-001",
+      "traces": 80,
+      "modelCalls": 200,
+      "agentCalls": 30,
+      "lastTraceAt": "2025-01-24T12:00:00.000Z"
+    },
+    {
+      "useCaseId": "UC-API-002",
+      "traces": 43,
+      "modelCalls": 256,
+      "agentCalls": 48,
+      "lastTraceAt": "2025-01-23T15:30:00.000Z"
+    }
+  ]
+}
+```
+
+**Exemplos:**
+```bash
+# Últimos 7 dias (padrão)
+curl "http://localhost:3000/stats/overview?tenantId=tenant-local"
+
+# Filtrar por ambiente
+curl "http://localhost:3000/stats/overview?tenantId=tenant-local&environment=hml"
+
+# Período customizado
+curl "http://localhost:3000/stats/overview?tenantId=tenant-local&from=2025-01-01T00:00:00Z&to=2025-01-31T23:59:59Z"
+
+# Ambiente + período customizado
+curl "http://localhost:3000/stats/overview?tenantId=tenant-local&environment=prod&from=2025-01-01T00:00:00Z&to=2025-01-31T23:59:59Z"
 ```
 
 ## Fluxo de Setup Completo

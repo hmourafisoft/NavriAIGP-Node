@@ -1,4 +1,4 @@
-import { Pool, QueryResult } from 'pg';
+import { Pool, QueryResult, QueryResultRow } from 'pg';
 import { logger } from './logger';
 
 /**
@@ -38,7 +38,10 @@ export function initDb(): void {
  * @param params Query parameters
  * @returns Query result
  */
-export async function query<T = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+export async function query<T extends QueryResultRow = QueryResultRow>(
+  text: string,
+  params?: any[]
+): Promise<QueryResult<T>> {
   if (!pool) {
     throw new Error('Database pool not initialized. Call initDb() first.');
   }

@@ -10,7 +10,7 @@
  *   tsx src/scripts/migrate.ts
  */
 
-import { Pool, Client } from 'pg';
+import { Client } from 'pg';
 import { readdir, readFile } from 'fs/promises';
 import { join } from 'path';
 import dotenv from 'dotenv';

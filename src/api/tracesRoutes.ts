@@ -64,7 +64,7 @@ const endTraceSchema = z.object({
  * POST /traces/start
  * Start a new trace
  */
-router.post('/start', async (req: Request, res: Response) => {
+router.post('/start', async (req: Request, res: Response): Promise<void> => {
   try {
     const body = startTraceSchema.parse(req.body);
     
@@ -82,10 +82,11 @@ router.post('/start', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn('Invalid request body for /traces/start', { errors: error.errors });
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Validation error',
         details: error.errors,
       });
+      return;
     }
 
     logger.error('Failed to start trace', error);
@@ -100,7 +101,7 @@ router.post('/start', async (req: Request, res: Response) => {
  * POST /traces/model-call
  * Log a model call
  */
-router.post('/model-call', async (req: Request, res: Response) => {
+router.post('/model-call', async (req: Request, res: Response): Promise<void> => {
   try {
     const body = modelCallSchema.parse(req.body);
     
@@ -119,10 +120,11 @@ router.post('/model-call', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn('Invalid request body for /traces/model-call', { errors: error.errors });
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Validation error',
         details: error.errors,
       });
+      return;
     }
 
     logger.error('Failed to log model call', error);
@@ -137,7 +139,7 @@ router.post('/model-call', async (req: Request, res: Response) => {
  * POST /traces/agent-call
  * Log an agent call
  */
-router.post('/agent-call', async (req: Request, res: Response) => {
+router.post('/agent-call', async (req: Request, res: Response): Promise<void> => {
   try {
     const body = agentCallSchema.parse(req.body);
     
@@ -155,10 +157,11 @@ router.post('/agent-call', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn('Invalid request body for /traces/agent-call', { errors: error.errors });
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Validation error',
         details: error.errors,
       });
+      return;
     }
 
     logger.error('Failed to log agent call', error);
@@ -173,7 +176,7 @@ router.post('/agent-call', async (req: Request, res: Response) => {
  * POST /traces/audit
  * Log an audit event
  */
-router.post('/audit', async (req: Request, res: Response) => {
+router.post('/audit', async (req: Request, res: Response): Promise<void> => {
   try {
     const body = auditEventSchema.parse(req.body);
     
@@ -186,10 +189,11 @@ router.post('/audit', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn('Invalid request body for /traces/audit', { errors: error.errors });
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Validation error',
         details: error.errors,
       });
+      return;
     }
 
     logger.error('Failed to log audit event', error);
@@ -204,7 +208,7 @@ router.post('/audit', async (req: Request, res: Response) => {
  * POST /traces/end
  * End a trace
  */
-router.post('/end', async (req: Request, res: Response) => {
+router.post('/end', async (req: Request, res: Response): Promise<void> => {
   try {
     const body = endTraceSchema.parse(req.body);
     
@@ -214,10 +218,11 @@ router.post('/end', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof z.ZodError) {
       logger.warn('Invalid request body for /traces/end', { errors: error.errors });
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Validation error',
         details: error.errors,
       });
+      return;
     }
 
     logger.error('Failed to end trace', error);
